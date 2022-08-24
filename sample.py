@@ -1,3 +1,4 @@
+import enum
 import json
 d = {
 	"name" : "shyam",
@@ -9,7 +10,7 @@ pet_list = []
 try:
     outputfile = open("database.json", "x")
     print("Creating database.json file")
-    close(outputfile)
+    outputfile.close()
 except FileExistsError:
     outputfile = open("database.json", "r")
     print("Reading the database.json file")

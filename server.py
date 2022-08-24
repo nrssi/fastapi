@@ -30,7 +30,7 @@ def write_pets():
     for i in range(0, len(pets_list)):
         pets[i] = dict(pets_list[i])
     json.dump(pets, outputfile)
-    close(outputfile)
+    outputfile.close()
 
 
 # function reads the database.json file in current directory and then converts the 
@@ -38,7 +38,7 @@ def write_pets():
 def read_pets():
     try:
         outputfile = open("database.json", "x")
-        close(outputfile)
+        outputfile.close()
     except FileExistsError:
         outputfile = open("database.json", "r")
         try:
