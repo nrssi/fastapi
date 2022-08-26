@@ -17,44 +17,6 @@ class PetDetails(BaseModel):
     pet_type:Union[str,None] = None
 
 
-# A temporary list to contain all the available pets 
-# the data stored in this list is written to database.json file in current 
-# directory.
-# and the data is written to this file with each modification operation like 
-# create, update and delete.
-# the same file is read during the startup routine of the server.
-pets_list = []
-
-# function takes all the values present in "pets_list" list and then writes it 
-# to database.json file. 
-#   def write_pets():
-#       outputfile =  open("database.json", "w")
-#       pets = {}
-#       for i in range(0, len(pets_list)):
-#           pets[i] = dict(pets_list[i])
-#       json.dump(pets, outputfile)
-#       outputfile.close()
-
-
-# function reads the database.json file in current directory and then converts 
-# the available data to a python dictionary.
-##  def read_pets():
-##      try:
-##          outputfile = open("database.json", "x")
-##          outputfile.close()
-##      except FileExistsError:
-##          outputfile = open("database.json", "r")
-##          try:
-##              pet_dict = json.load(outputfile)
-##              for i in range(0, len(pet_dict)):
-##                  pets_list.append(PetDetails(
-##                      name=pet_dict[str(i)]["name"], 
-##                      age=pet_dict[str(i)]["age"], 
-##                      type=pet_dict[str(i)]["type"])
-##                      )
-##          except json.decoder.JSONDecodeError:
-##              print("Error parsing the json file.")
-##          return
 
 # the startup function executes on after starting the server
 @server.on_event("startup")
