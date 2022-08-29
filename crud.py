@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
+import copy
 Base = declarative_base()
 
 class Pets(Base):
@@ -32,6 +33,8 @@ def get_pet_by_name(db:Session, name : str):
     result = db.query(Pets).filter(Pets.name == name).all()
     if not result:
         raise HTTPException(status_code=404, detail=f"No Pet by name {name} found")
+    else:
+        return result
 
 def get_all_pets(db:Session):
     return  db.query(Pets).all()
@@ -43,7 +46,21 @@ def insert_pet(db : Session, details : PetsForm):
     db.refresh(pet)
     return pet
 
-def update_pet(db:Session, pet_name : str, details : PetsForm):
-    db.execute(update(Pets).where(Pets.name == pet_name).values(name=details.name, age=details.age, type=details.type))
+def update_pet(db:Session, pet_id: int, details : PetsForm):
+    print("the value of id is : ", pet_id)
+    result = db.query(Pets).filter(Pets.id == pet_id).first()
+    print(type(result), type(details))
+    result.name = details.name
+    result.age = details.age
+    result.type = details.type
+    db.flush()
     db.commit()
+    return result
 
+def delete_pet(db : Session, pet_id : int):
+    result = db.query(Pets).filter(Pets.id == pet_id).first()
+    tmp = copy.deepcopy(result)
+    db.delete(result)
+    db.flush()
+    db.commit()
+    return tmp 

@@ -53,17 +53,17 @@ async def connection():
 async def get_pets(id : int, db:Session = Depends(get_db)):
     result = crud.get_pet(db, id)
     return result
-@server.get("/get_by_name/{name}")
-async def get_pets_by_name(name : str, db : Session = Depends(get_db)):
-    result = crud.get_pet_by_name(db, name)
-    return result
-
-@server.post("/create")
+@server.put("/create")
 async def create_pet(pet : crud.PetsForm, db : Session = Depends(get_db)):
     result = crud.insert_pet(db, pet)
     return result
 
 @server.post("/update")
-async def update_pet(pet_name : str, details : crud.PetsForm, db : Session = Depends(get_db)):
-    result = crud.update_pet(db, id, details)
+async def update_pet(pet_id: int, details : crud.PetsForm, db : Session = Depends(get_db)):
+    result = crud.update_pet(db, pet_id, details)
+    return result
+
+@server.delete("/delete")
+async def delete_pet(pet_id : int, db : Session = Depends(get_db)):
+    result = crud.delete_pet(db, pet_id)
     return result
