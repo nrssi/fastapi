@@ -1,0 +1,10 @@
+22-08-2022 : FAST API, Swagger UI docs => Implementing simple arithmetic operations and returning the values to user in json format using FastAPI
+23-08-2022 : Fast API, Swagger UI docs => Implementing CRUD operations over a simple pet program
+24-08-2022 : Fast API, SQLAlchemy      => Working with databases using sqlalchemy and management of ORM (object relational mapping)
+25-08-2022 : Fast API, SQLAlchemy      => Implementing the CRUD operations
+26-08-2022 : Fast API, SQLAlchemy      => Implementing the CRUD operations and providing API for interface 
+29-08-2022 : SQLAlchemy, PySpark       => Completed CRUD using pure ORM model, Quick overview of what pyspark is and the operations of parquet file 
+30-08-2022 : PySpark                   => Working on the setup and configuration of pyspark with spark, winutils and environment variables.
+01-09-2022 : SQLAlchemy, PySpark       => Completed the setup and configured pyspark to retrieve data from a database rather than a csv file
+02-09-2022 : FastAPI                   => Setting up the microservice boilerplate code
+

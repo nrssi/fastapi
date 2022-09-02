@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, update
+from sqlalchemy import Column, Integer, String
 from pydantic import BaseModel
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session
@@ -12,6 +12,9 @@ class Pets(Base):
     name = Column(String(30)) 
     age = Column(Integer)
     type = Column(String(30))
+    
+    def __repr__(self) -> str:
+        return f"<Pet id = {self.id}, name = {self.name}, age = {self.age}, type = {self.type}>"
 
 
 class PetsForm(BaseModel):
@@ -29,6 +32,9 @@ def get_pet(db:Session, id : int):
     else:
         return result
 
+def get_all(db : Session):
+    result = db.query(Pets).all()
+    return result
 def get_pet_by_name(db:Session, name : str):
     result = db.query(Pets).filter(Pets.name == name).all()
     if not result:
@@ -53,7 +59,6 @@ def update_pet(db:Session, pet_id: int, details : PetsForm):
     result.name = details.name
     result.age = details.age
     result.type = details.type
-    db.flush()
     db.commit()
     return result
 
@@ -61,6 +66,5 @@ def delete_pet(db : Session, pet_id : int):
     result = db.query(Pets).filter(Pets.id == pet_id).first()
     tmp = copy.deepcopy(result)
     db.delete(result)
-    db.flush()
     db.commit()
     return tmp 
