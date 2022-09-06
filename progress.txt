@@ -7,4 +7,6 @@
 30-08-2022 : PySpark                   => Working on the setup and configuration of pyspark with spark, winutils and environment variables.
 01-09-2022 : SQLAlchemy, PySpark       => Completed the setup and configured pyspark to retrieve data from a database rather than a csv file
 02-09-2022 : FastAPI                   => Setting up the microservice boilerplate code
+05-09-2022 : SQLAlchemy                => Retrieval of schema, tables and data using ORM
+06-09-2022 : FastAPI                   => Working on microservice setup
 
