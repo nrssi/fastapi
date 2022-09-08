@@ -1,4 +1,5 @@
 from pydantic import BaseModel 
+from typing import Union
 
 class DBInfo(BaseModel):
     database_name:str
@@ -6,4 +7,8 @@ class DBInfo(BaseModel):
     password:str 
     ip_address:str 
     port_number:int
-    schema_name:str
+    schema_name:Union[str, None] = None
+
+class ArchiveInfo(BaseModel):
+    path:str = "dest"
+    compression_type:Union[str, None] = None
