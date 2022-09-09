@@ -4,6 +4,7 @@ from micro_app.models import DBInfo
 from .connection import create_engine
 from ..helpers import connection_required
 from ..config import config
+import json
 router = APIRouter(prefix="/retrieve")
 
 
@@ -37,4 +38,4 @@ async def get_metadata(schema_name: str, table_name: str):
         f"{connection_details.database_name}+pymysql://{connection_details.username}:{connection_details.password}@{connection_details.ip_address}:{connection_details.port_number}/{schema_name}")
     inspector = inspect(engine)
     result = inspector.get_columns(table_name)
-    return result
+    return f"{result}"

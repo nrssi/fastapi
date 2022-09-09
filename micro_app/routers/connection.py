@@ -27,6 +27,9 @@ async def connect(details: DBInfo):
     except exc.OperationalError:
         raise HTTPException(
             status_code=404, detail="Wrong or missing Credentials")
+    except exc.InterfaceError:
+        raise HTTPException(
+            status_code=404, detail="Dialect not specified or Data source name cannot be found")
     if not config.engine.connect():
         pass
     else:
