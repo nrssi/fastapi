@@ -8,7 +8,6 @@ class DBInfo(BaseModel):
     password: str
     ip_address: str
     port_number: int
-    schema_name: Union[str, None] = None
 
 
 class ArchiveInfo(BaseModel):

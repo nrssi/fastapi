@@ -45,6 +45,7 @@ def create_parquet(engine, schemas: List[str], table_names: List[str] = [], deta
         if not table_names:
             tables = [cls_obj for _cls_name, cls_obj in inspect.getmembers(sys.modules[schema]) if inspect.isclass(
                 cls_obj) and isinstance(cls_obj, decl_api.DeclarativeMeta) and cls_obj.__name__ != "Base"]
+            os.remove(f"{schema}.py")
             for table in tables:
                 db = SessionLocal()
                 result = db.query(table).all()
@@ -61,6 +62,7 @@ def create_parquet(engine, schemas: List[str], table_names: List[str] = [], deta
         else:
             tables = [cls_obj for _cls_name, cls_obj in inspect.getmembers(sys.modules[schema]) if inspect.isclass(cls_obj) and isinstance(
                 cls_obj, decl_api.DeclarativeMeta) and cls_obj.__name__ != "Base" and cls_obj.__tablename__ in table_names]
+            os.remove(f"{schema}.py")
             for table in tables:
                 db = SessionLocal()
                 result = db.query(table).all()
@@ -75,7 +77,6 @@ def create_parquet(engine, schemas: List[str], table_names: List[str] = [], deta
                     raise HTTPException(
                         status_code=500, detail=f"Cannot infer Column Datatypes for Table {table.__name__}, Please provide the schema manually.")
         del table_module
-        os.remove(f"{schema}.py")
 
 
 # A decorator to check if a connection exists before calling the passed function

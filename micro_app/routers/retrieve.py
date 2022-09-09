@@ -1,7 +1,6 @@
 from fastapi import APIRouter
 from sqlalchemy import inspect
 from micro_app.models import DBInfo
-from copy import deepcopy
 from .connection import create_engine
 from ..helpers import connection_required
 from ..config import config

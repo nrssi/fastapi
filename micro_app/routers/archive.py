@@ -21,12 +21,12 @@ router = APIRouter(prefix="/archive")
 
 @router.post("/")
 @connection_required
-async def archive_all():
+async def archive_all(archive_details:models.ArchiveInfo):
     engine = config.engine
     inspector = inspect(engine)
     schema_names = inspector.get_schema_names()
-    create_parquet(engine, schema_names)
-    pass
+    create_parquet(engine, schema_names, details=archive_details)
+    return {"msg": "Creation of parquet files for all tables completed successfully"}
 
 
 @router.post("/schema")
