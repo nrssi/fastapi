@@ -2,7 +2,8 @@ import colorama
 import os
 from typing import List
 from ..helpers import create_parquet
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, BackgroundTasks
+from fastapi.responses import JSONResponse
 from pyspark.sql import SparkSession
 from ..config import config
 from sqlalchemy import inspect
@@ -21,25 +22,28 @@ router = APIRouter(prefix="/archive")
 
 @router.post("/")
 @connection_required
-async def archive_all(archive_details:models.ArchiveInfo):
+async def archive_all(archive_details:models.ArchiveInfo, background_task:BackgroundTasks):
     engine = config.engine
     inspector = inspect(engine)
     schema_names = inspector.get_schema_names()
-    create_parquet(engine, schema_names, details=archive_details)
-    return {"msg": "Creation of parquet files for all tables completed successfully"}
+    task = background_task.add_task(create_parquet, engine=engine, schemas=schema_names, details=archive_details)
+    response = {"detail": "Creation of parquet files for all tables in progress"}
+    return JSONResponse(response, background=task)
 
 
 @router.post("/schema")
 @connection_required
-async def archive_schema(schema: str, archive_details: models.ArchiveInfo):
+async def archive_schema(schema: str, archive_details: models.ArchiveInfo, background_task:BackgroundTasks):
     engine = config.engine
-    create_parquet(engine, [schema])
-    return {"msg": "Creation of parquet files for all tables completed successfully"}
+    task = background_task.add_task(create_parquet, engine=engine, schemas=[schema], details=archive_details)
+    response = {"detail": "Creation of parquet files for all tables in progress"}
+    return JSONResponse(response, background=task)
 
 
 @router.post("/table")
 @connection_required
-async def archive_table(schema: List[str], table: List[str], archive_details: models.ArchiveInfo):
+async def archive_table(schema: List[str], table: List[str], archive_details: models.ArchiveInfo, background_task:BackgroundTasks):
     engine = config.engine
-    create_parquet(engine, schema, table, archive_details)
-    return {"msg": "Creation of parquet files for all tables completed successfully"}
+    task = background_task.add_task(create_parquet, engine=engine, schemas=schema, table_names=table, details=archive_details)
+    response = {"detail": "Creation of parquet files for all tables in progress"}
+    return JSONResponse(response, background=task)

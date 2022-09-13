@@ -1,41 +1,45 @@
-from fastapi import APIRouter
-from sqlalchemy import inspect
-from micro_app.models import DBInfo
-from .connection import create_engine
+from fastapi import APIRouter, HTTPException
+from sqlalchemy import inspect, exc
 from ..helpers import connection_required
 from ..config import config
-import json
+
+
+
 router = APIRouter(prefix="/retrieve")
 
 
 @router.get("/schemas")
 @connection_required
 async def get_schemas():
-    connection_details = config.connection_details
-    engine = create_engine(
-        f"{connection_details.database_name}+pymysql://{connection_details.username}:{connection_details.password}@{connection_details.ip_address}:{connection_details.port_number}/")
-    inspector = inspect(engine)
+    inspector = inspect(config.engine)
     result = inspector.get_schema_names()
-    return result
-
+    return {"SCHEMAS" : result}
 
 @router.get("/tables")
 @connection_required
 async def get_tables(schema_name: str):
-    connection_details = config.connection_details
-    engine = create_engine(
-        f"{connection_details.database_name}+pymysql://{connection_details.username}:{connection_details.password}@{connection_details.ip_address}:{connection_details.port_number}/{schema_name}")
-    inspector = inspect(engine)
-    result = inspector.get_table_names()
-    return result
+    inspector = inspect(config.engine)
+    try:
+        result = inspector.get_table_names(schema_name)
+        return {"SCHEMA" : schema_name, "TABLES" : result}
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"Database {schema_name} not found")
 
 
 @router.get("/metadata")
 @connection_required
 async def get_metadata(schema_name: str, table_name: str):
-    connection_details = config.connection_details
-    engine = create_engine(
-        f"{connection_details.database_name}+pymysql://{connection_details.username}:{connection_details.password}@{connection_details.ip_address}:{connection_details.port_number}/{schema_name}")
-    inspector = inspect(engine)
-    result = inspector.get_columns(table_name)
-    return f"{result}"
+    inspector = inspect(config.engine)
+    try:
+        result = inspector.get_columns(table_name, schema_name)
+        fields = {"SCHEMA" : schema_name, "TABLE":table_name}
+        for row in result:
+            fields[f"{row['name']}"] = f"{row['type']}"
+        return fields
+    except exc.NoSuchTableError:
+        raise HTTPException(status_code=500, detail=f"No table named {table_name} found")
+    except exc.OperationalError:
+        raise HTTPException(status_code=500, detail=f"No schema named {schema_name} found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"{e}")
+

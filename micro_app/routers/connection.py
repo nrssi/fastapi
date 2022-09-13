@@ -1,8 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from copy import deepcopy
 from ..config import config
-from functools import wraps
-from sqlalchemy import create_engine, exc
+from sqlalchemy import create_engine
 from ..models import DBInfo
 
 router = APIRouter(prefix="/connect")
@@ -16,22 +15,12 @@ async def connect(details: DBInfo):
     elif details.database_name == "oracle":
         dialect = "cx_oracle"
     elif details.database_name == "mssql":
-        dialect == "pymssql"
+        dialect = "pymssql"
     config.conn_str = f"{details.database_name}+{dialect}://{details.username}:{details.password}@{details.ip_address}:{details.port_number}/"
     try:
         config.engine = create_engine(config.conn_str)
         config.connection_details = deepcopy(details)
         config.engine.connect()
-    except exc.NoSuchModuleError:
-        raise HTTPException(status_code=404, detail="Unknown Database Server")
-    except exc.OperationalError:
-        raise HTTPException(
-            status_code=404, detail="Wrong or missing Credentials")
-    except exc.InterfaceError:
-        raise HTTPException(
-            status_code=404, detail="Dialect not specified or Data source name cannot be found")
-    if not config.engine.connect():
-        pass
-    else:
-        return {"msg": "Connection successfull"}
-
+        return {"detail" : "Connection Successful"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"{e}")
