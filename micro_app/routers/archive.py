@@ -22,28 +22,28 @@ router = APIRouter(prefix="/archive")
 
 @router.post("/")
 @connection_required
-async def archive_all(archive_details:models.ArchiveInfo, background_task:BackgroundTasks):
+async def archive_all(archive_details:models.ArchiveInfo):
     engine = config.engine
     inspector = inspect(engine)
     schema_names = inspector.get_schema_names()
-    task = background_task.add_task(create_parquet, engine=engine, schemas=schema_names, details=archive_details)
+    task = create_parquet(engine=engine, schemas=schema_names, details=archive_details)
     response = {"detail": "Creation of parquet files for all tables in progress"}
-    return JSONResponse(response, background=task)
+    return JSONResponse(response)
 
 
 @router.post("/schema")
 @connection_required
-async def archive_schema(schema: str, archive_details: models.ArchiveInfo, background_task:BackgroundTasks):
+async def archive_schema(schema: str, archive_details: models.ArchiveInfo):
     engine = config.engine
-    task = background_task.add_task(create_parquet, engine=engine, schemas=[schema], details=archive_details)
+    task = create_parquet(engine=engine, schemas=[schema], details=archive_details)
     response = {"detail": "Creation of parquet files for all tables in progress"}
-    return JSONResponse(response, background=task)
+    return JSONResponse(response)
 
 
 @router.post("/table")
 @connection_required
-async def archive_table(schema: List[str], table: List[str], archive_details: models.ArchiveInfo, background_task:BackgroundTasks):
+async def archive_table(schema: List[str], table: List[str], archive_details: models.ArchiveInfo):
     engine = config.engine
-    task = background_task.add_task(create_parquet, engine=engine, schemas=schema, table_names=table, details=archive_details)
+    task = create_parquet(engine=engine, schemas=schema, table_names=table, details=archive_details)
     response = {"detail": "Creation of parquet files for all tables in progress"}
-    return JSONResponse(response, background=task)
+    return JSONResponse(response)
