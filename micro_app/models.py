@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 class DBInfo(BaseModel):
     """Contains information related to connection of database"""
-    database_name: str
+    database_server: str
     username: str
     password: str
     ip_address: str

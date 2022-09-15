@@ -42,21 +42,21 @@ def create_parquet(engine, schemas: List[str], table_names: List[str] = [], deta
         try:
             engine.connect()
         except exc.OperationalError:
-            yield {"detail" : f"No such schema found : {schema}"}
+            return {"detail" : f"No such schema found : {schema}"}
         except Exception as e:
-            yield {"detail" : f"{e}"}
+            return {"detail" : f"{e}"}
         SessionLocal = sessionmaker(bind=engine)
         sqla_path = os.getcwd()+"\\env\\Scripts\\sqlacodegen.exe"
         print(colorama.Fore.GREEN+"INFO:",
               f"\t  Running Command : {sqla_path} {url} --outfile {schema}.py")
         result = subprocess.Popen([sqla_path, url, "--outfile", f"{schema}.py"]).wait()
         if result:
-            yield {"detail" : "Failed to generate ORM model"}
+            return {"detail" : "Failed to generate ORM model"}
         try:
             table_module = importlib.__import__(schema)
             importlib.reload(table_module)
         except Exception as e:
-            yield {"detail" : "Import Error ORM model not compatible with SQLAlchemy"}
+            return {"detail" : "Import Error ORM model not compatible with SQLAlchemy"}
         if not table_names:
             tables = [cls_obj for _cls_name, cls_obj in inspect.getmembers(sys.modules[schema]) if inspect.isclass(
                 cls_obj) and isinstance(cls_obj, decl_api.DeclarativeMeta) and cls_obj.__name__ != "Base"]
@@ -74,7 +74,7 @@ def create_parquet(engine, schemas: List[str], table_names: List[str] = [], deta
                     df.repartition(1).write.mode("overwrite").format("parquet").option(
                         "compression", details.compression_type).save(f"{details.path}/{schema}/{table.__name__}")
                 except ValueError as ve:
-                    yield {"soething" : "something1"}
+                    return {"detail" : f"{ve}"}
         else:
             tables = [cls_obj for _cls_name, cls_obj in inspect.getmembers(sys.modules[schema]) if inspect.isclass(cls_obj) and isinstance(
                 cls_obj, decl_api.DeclarativeMeta) and cls_obj.__name__ != "Base" and cls_obj.__tablename__ in table_names]
@@ -91,8 +91,8 @@ def create_parquet(engine, schemas: List[str], table_names: List[str] = [], deta
                           f"\t  Writing {table.__name__} to path : {details.path} using {details.compression_type} compression algorithm")
                     df.repartition(1).write.mode("overwrite").format("parquet").option(
                         "compression", details.compression_type).save(f"{details.path}/{schema}/{table.__name__}")
-                except ValueError:
-                    yield {"soething" : "something1"}
+                except ValueError as e:
+                    return {"detail" : f"{e}"}
         del table_module
     print(colorama.Fore.GREEN+"INFO:", "\t  create_paruet function call completed")
     return {"detail" : "Creation of parquet files executed successfully"}

@@ -9,8 +9,15 @@ def read_file(path:str):
     try:
         df = spark.read.parquet(sys.argv[1])
         df.show()
+        print("--------------------------------------------------")
+        print("                     SCHEMA")
+        print("--------------------------------------------------")
+        df.printSchema()
+        print("--------------------------------------------------\n\n")
         print("The total number of rows read form the archive : ", df.count())
+        print("The total number of columns read from the archive : ", len(df.columns))
     except Exception as e:
         print(f"{e}")
 
-read_file(sys.argv[1])
+if __name__ == "__main__":
+    read_file(sys.argv[1])
