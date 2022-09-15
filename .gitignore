@@ -3,3 +3,4 @@ Lib/
 include/
 Scripts/
 __pycache__/
+*
