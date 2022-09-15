@@ -8,7 +8,11 @@
 01-09-2022 : SQLAlchemy, PySpark       => Completed the setup and configured pyspark to retrieve data from a database rather than a csv file
 02-09-2022 : FastAPI                   => Setting up the microservice boilerplate code
 05-09-2022 : SQLAlchemy                => Retrieval of schema, tables and data using ORM
-06-09-2022 : FastAPI                   => Working on microservice setup
-07-09-2022 : FastAPI                   => Creating services to manage connection, retrieval and archiving
-08-09-2022 : FastAPI                   => Creating parquet file archiver using snappy compression
-09-09-2022 : FastAPI                   => Finishing the API required for archiving the files.
+06-09-2022 : FastAPI, PySpark          => Working on microservice setup
+07-09-2022 : FastAPI, PySpark          => Creating services to manage connection, retrieval and archiving
+08-09-2022 : FastAPI, PySpark          => Creating parquet file archiver using snappy compression
+09-09-2022 : FastAPI, PySpark          => Finishing the API required for archiving the files.
+12-09-2022 : FastAPI, PySpark          => Test case handling for all generated APIs
+13-09-2022 : FastAPI, PySpark          => Exception handling in all APIs
+14-09-2022 : FastAPI, PySpark          => Fact checking all APIs for expected results
+15-09-2022 : FastAPI, PySpark          => Demo, working on reading the parquet files generated through the services
